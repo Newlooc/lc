@@ -14,7 +14,7 @@ import (
 var (
 	errorInvalidDateRange = errors.New("Invalid data range")
 	urlTemplate           = "http://fund.eastmoney.com/data/FundInvestCaculator_AIPDatas.aspx?fcode=%s&sdate=%s&edate=%s&shdate=&round=%d&dtr=1&p=%.2f&je=%.2f&stype=1&needfirst=2&jsoncallback=FundDTSY.result"
-	sleepDuration         = time.Second * 1
+	sleepDuration         = time.Millisecond * 1500
 )
 
 type Manager struct {
@@ -69,6 +69,7 @@ func (mr *Manager) Run() error {
 		log.WithError(err).Error("Failed to gen urls.")
 		return err
 	}
+	log.Debugf("DEBUG %+v", mr.URLs)
 
 	log.Info("Start visit URLs")
 	visit := spider.NewVisit()
@@ -110,13 +111,13 @@ func (mr *Manager) genInterval() error {
 }
 
 func (mr *Manager) genURLs() error {
-	for _, start := range mr.Config.IntervalStart {
-		for _, end := range mr.Config.IntervalEnd {
+	for _, end := range mr.Config.IntervalEnd {
+		for _, start := range mr.Config.IntervalStart {
 			if start.Before(end) {
 				mr.URLs[apis.URLConfig{
 					Start: start,
 					End:   end,
-				}] = fmt.Sprintf(urlTemplate, mr.Config.Code, start.Format(apis.DateFormat), end.Format(apis.DateFormat), mr.Config.Frq, mr.Config.Money, mr.Config.Rate)
+				}] = fmt.Sprintf(urlTemplate, mr.Config.Code, start.Format(apis.DateFormat), end.Format(apis.DateFormat), mr.Config.Frq, mr.Config.Rate, mr.Config.Money)
 			}
 		}
 	}

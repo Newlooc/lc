@@ -34,6 +34,7 @@ func NewExcel(filename, sheet string) *Excel {
 }
 
 func (e *Excel) Write(data map[apis.URLConfig]*parser.DTMock, x []time.Time, y []time.Time) error {
+	e.ExcelFile.NewSheet(e.Sheet)
 	log.Info("Start write xhead.")
 	e.writeXHead(x)
 	log.Info("Start write yhead.")
@@ -46,9 +47,16 @@ func (e *Excel) Write(data map[apis.URLConfig]*parser.DTMock, x []time.Time, y [
 				Start: startPoint,
 				End:   endPoint,
 			}]
+			log.Debugf("TESTQUERY: %+v", apis.URLConfig{
+				Start: startPoint,
+				End:   endPoint,
+			})
 			if dtData == nil {
+				e.Right()
 				continue
 			}
+			log.Debugf("Set Cell Value: %s, %s, %+v", e.Sheet, e.GetAxis(), dtData)
+
 			e.ExcelFile.SetCellValue(e.Sheet, e.GetAxis(), dtData.ProfitPercent)
 			e.Right()
 		}

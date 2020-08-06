@@ -3,14 +3,11 @@ package parser
 import (
 	"encoding/json"
 	"errors"
+	"github.com/Newlooc/dt/pkg/apis"
 	log "github.com/sirupsen/logrus"
 	"strconv"
 	"strings"
 	"time"
-)
-
-const (
-	dateformat = "2006-01-02"
 )
 
 type response struct {
@@ -99,7 +96,7 @@ func (dt *DTMock) parseRecords(raw []string) error {
 			log.WithError(ERRORUnexpectedRawData).Errorf("record unrecognised. %s.", recordstr)
 			//return ERRORUnexpectedRawData
 		} else {
-			date, err := time.Parse(strings.TrimSpace(dateformat), recordpreparse[1])
+			date, err := time.Parse(strings.TrimSpace(apis.DateFormat), recordpreparse[1])
 			if err != nil {
 				log.WithError(err).Errorf("failed to parse date, raw data: %s", recordstr)
 				//return err
@@ -174,7 +171,7 @@ func (dt *DTMock) parseSummary(raw string) error {
 		return err
 	}
 
-	mockcalculatedate, err := time.Parse(dateformat, strings.TrimSpace(summarypreparse[7]))
+	mockcalculatedate, err := time.Parse(apis.DateFormat, strings.TrimSpace(summarypreparse[7]))
 	if err != nil {
 		log.WithError(err).Errorf("failed to parse mockcalculatedate, raw data: %s", raw)
 		return err

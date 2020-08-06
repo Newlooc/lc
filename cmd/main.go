@@ -1,31 +1,54 @@
 package main
 
 import (
-	"fmt"
+	"flag"
 	"github.com/Newlooc/dt/pkg/apis"
 	"github.com/Newlooc/dt/pkg/dtmanager"
 	log "github.com/sirupsen/logrus"
 	"time"
 )
 
+var (
+	start string
+	end   string
+	code  string
+	frq   int
+	money float64
+	rate  float64
+	debug bool
+)
+
 func main() {
-
-	start, _ := time.Parse(apis.DateFormat, "2010-01-01")
-	end, _ := time.Parse(apis.DateFormat, "2020-01-01")
-
-	dtm, err := dtmanager.NewDTManager("161005", start, end, 1, float64(100), 0.15)
+	startTime, err := time.Parse(apis.DateFormat, start)
 	if err != nil {
-		log.WithError(err).Fatal("INIT")
+		log.WithError(err).Fatalf("Date format should be YYYY-MM-DD. %s given.", start)
+	}
+	endTime, err := time.Parse(apis.DateFormat, end)
+	if err != nil {
+		log.WithError(err).Fatalf("Date format should be YYYY-MM-DD. %s given.", start)
+	}
+
+	dtm, err := dtmanager.NewDTManager(code, startTime, endTime, frq, money, rate)
+	if err != nil {
+		log.WithError(err).Fatal("Manager init with error.")
 	}
 	dtm.Run()
 	if err != nil {
-		log.WithError(err).Fatal("RUN")
+		log.WithError(err).Fatal("Manager run with error.")
 	}
-	fmt.Printf("%+v\n", dtm.Config.IntervalStart)
-	fmt.Printf("%+v\n", dtm.Config.IntervalEnd)
 }
 
 func init() {
+	flag.BoolVar(&debug, "debug", false, "debug")
+	flag.StringVar(&start, "start", "", "YYYY-MM-DD")
+	flag.StringVar(&end, "end", "", "YYYY-MM-DD")
+	flag.StringVar(&code, "code", "", "code")
+	flag.Float64Var(&money, "money", 100, "money")
+	flag.IntVar(&frq, "frq", 1, "frq")
+	flag.Float64Var(&rate, "rate", 0.15, "rate")
+	flag.Parse()
 
-	log.SetLevel(log.DebugLevel)
+	if debug {
+		log.SetLevel(log.DebugLevel)
+	}
 }

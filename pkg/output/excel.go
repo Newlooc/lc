@@ -34,7 +34,8 @@ func NewExcel(filename, sheet string) *Excel {
 }
 
 func (e *Excel) Write(data map[apis.URLConfig]*parser.DTMock, x []time.Time, y []time.Time) error {
-	e.ExcelFile.NewSheet(e.Sheet)
+	index := e.ExcelFile.NewSheet(e.Sheet)
+	e.ExcelFile.SetActiveSheet(index)
 	log.Info("Start write xhead.")
 	e.writeXHead(x)
 	log.Info("Start write yhead.")

@@ -13,6 +13,7 @@ import (
 
 var (
 	errorInvalidDateRange = errors.New("Invalid data range")
+	errorInvalidArgument  = errors.New("Invalid Arguments")
 	urlTemplate           = "http://fund.eastmoney.com/data/FundInvestCaculator_AIPDatas.aspx?fcode=%s&sdate=%s&edate=%s&shdate=&round=%d&dtr=1&p=%.2f&je=%.2f&stype=1&needfirst=2&jsoncallback=FundDTSY.result"
 	sleepDuration         = time.Millisecond * 1500
 )
@@ -39,6 +40,11 @@ func NewDTManager(code string, start, end time.Time, frq int, money, rate float6
 	if start.After(end) || start.Equal(end) {
 		log.WithError(errorInvalidDateRange).Error("%s to %s.", start.Format(apis.DateFormat), end.Format(apis.DateFormat))
 		return nil, errorInvalidDateRange
+	}
+
+	if money <= float64(0) || rate >= float64(100) || rate <= float64(0) {
+		log.WithError(errorInvalidArgument).Errorf("code %s. start %s. end %s. frq %s. money %s. rate %s.", code, start, end, frq, money, rate)
+		return nil, errorInvalidArgument
 	}
 
 	conf := &ManagerConfig{
@@ -75,6 +81,7 @@ func (mr *Manager) Run() error {
 	visit := spider.NewVisit()
 	for urlConfig, url := range mr.URLs {
 		_, b, err := visit.Do(url, false)
+		log.Infof("URL %s visited.", url)
 		if err != nil {
 			log.WithError(err).Errorf("Failed to run url %s.", url)
 		}

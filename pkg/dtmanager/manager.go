@@ -58,16 +58,19 @@ func NewDTManager(code string, start, end time.Time, frq int, money, rate float6
 }
 
 func (mr *Manager) Run() error {
+	log.Info("Start gen interval")
 	if err := mr.genInterval(); err != nil {
 		log.WithError(err).Error("Failed to gen interval.")
 		return err
 	}
 
+	log.Info("Start gen URLs")
 	if err := mr.genURLs(); err != nil {
 		log.WithError(err).Error("Failed to gen urls.")
 		return err
 	}
 
+	log.Info("Start visit URLs")
 	visit := spider.NewVisit()
 	for urlConfig, url := range mr.URLs {
 		_, b, err := visit.Do(url, false)
@@ -82,7 +85,8 @@ func (mr *Manager) Run() error {
 	}
 
 	// output
-	excel := output.NewExcel(mr.Config.Code, mr.Config.Code)
+	log.Info("Start output")
+	excel := output.NewExcel(mr.Config.Code+".xlsx", mr.Config.Code)
 	if err := excel.Write(mr.Parsed, mr.Config.IntervalEnd, mr.Config.IntervalStart); err != nil {
 		log.WithError(err)
 	}

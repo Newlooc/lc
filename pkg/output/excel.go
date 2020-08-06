@@ -23,30 +23,39 @@ type Excel struct {
 
 func NewExcel(filename, sheet string) *Excel {
 	return &Excel{
-		Filename:      filename,
-		ExcelFile:     excel.NewFile(),
-		Sheet:         sheet,
-		currentColume: "A",
-		currentRow:    "1",
+		Filename:           filename,
+		ExcelFile:          excel.NewFile(),
+		Sheet:              sheet,
+		headStartColume:    "A",
+		headStartRow:       "1",
+		contentStartColume: "B",
+		contentStartRow:    "2",
 	}
 }
 
 func (e *Excel) Write(data map[apis.URLConfig]*parser.DTMock, x []time.Time, y []time.Time) error {
+	log.Info("Start write xhead.")
 	e.writeXHead(x)
+	log.Info("Start write yhead.")
 	e.writeYHead(y)
+	log.Info("Start write content.")
 	e.PosContentStart()
 	for _, startPoint := range y {
 		for _, endPoint := range x {
-			profitPercent := data[apis.URLConfig{
+			dtData := data[apis.URLConfig{
 				Start: startPoint,
 				End:   endPoint,
-			}].ProfitPercent
-			e.ExcelFile.SetCellValue(e.Sheet, e.GetAxis(), profitPercent)
+			}]
+			if dtData == nil {
+				continue
+			}
+			e.ExcelFile.SetCellValue(e.Sheet, e.GetAxis(), dtData.ProfitPercent)
 			e.Right()
 		}
 		e.PosContentNextRow()
 	}
 
+	log.Info("Start save file.")
 	if err := e.ExcelFile.SaveAs(e.Filename); err != nil {
 		log.WithError(err).Error("Failed to save EXCEL file.")
 	}
@@ -82,13 +91,14 @@ func (e *Excel) Right() {
 		if i == len(byteArr) {
 			byteArr = append(byteArr, 'A')
 			carry--
-		}
-		if byteArr[i] == 'Z' {
-			byteArr[i] = 'A'
-			i++
 		} else {
-			byteArr[i]++
-			carry--
+			if byteArr[i] == 'Z' {
+				byteArr[i] = 'A'
+				i++
+			} else {
+				byteArr[i]++
+				carry--
+			}
 		}
 	}
 	arrayRevers(byteArr)
@@ -102,6 +112,8 @@ func arrayRevers(arr []byte) {
 		temp := arr[h]
 		arr[h] = arr[t]
 		arr[t] = temp
+		h++
+		t--
 	}
 }
 

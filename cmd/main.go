@@ -22,7 +22,7 @@ func main() {
 	//	fmt.Printf("%+v\n", h)
 	//	fmt.Printf("%+v\n", string(b))
 
-	start, _ := time.Parse(apis.DateFormat, "2010-02-05")
+	start, _ := time.Parse(apis.DateFormat, "2018-02-05")
 	end, _ := time.Parse(apis.DateFormat, "2020-09-17")
 
 	dtm, err := dtmanager.NewDTManager("000175", start, end, 1, float64(100), 0.15)

@@ -4,8 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/Newlooc/dt/pkg/apis"
+	"github.com/Newlooc/dt/pkg/output"
 	"github.com/Newlooc/dt/pkg/parser"
-	//	"github.com/Newlooc/dt/pkg/spider"
+	"github.com/Newlooc/dt/pkg/spider"
 	log "github.com/sirupsen/logrus"
 	"time"
 )
@@ -18,8 +19,8 @@ var (
 
 type Manager struct {
 	Config *ManagerConfig
-	URLs   map[URLConfig]string
-	Parsed map[URLConfig]*parser.DTMock
+	URLs   map[apis.URLConfig]string
+	Parsed map[apis.URLConfig]*parser.DTMock
 }
 
 type ManagerConfig struct {
@@ -32,11 +33,6 @@ type ManagerConfig struct {
 	Limit         time.Duration
 	Money         float64
 	Rate          float64
-}
-
-type URLConfig struct {
-	Start time.Time
-	End   time.Time
 }
 
 func NewDTManager(code string, start, end time.Time, frq int, money, rate float64) (*Manager, error) {
@@ -56,8 +52,8 @@ func NewDTManager(code string, start, end time.Time, frq int, money, rate float6
 
 	return &Manager{
 		Config: conf,
-		URLs:   make(map[URLConfig]string),
-		Parsed: make(map[URLConfig]*parser.DTMock),
+		URLs:   make(map[apis.URLConfig]string),
+		Parsed: make(map[apis.URLConfig]*parser.DTMock),
 	}, nil
 }
 
@@ -72,21 +68,24 @@ func (mr *Manager) Run() error {
 		return err
 	}
 
-	//visit := spider.NewVisit()
-	//for urlConfig, url := range mr.URLs {
-	//	_, b, err := visit.Do(url)
-	//	if err != nil {
-	//		log.WithError(err).Errorf("Failed to run url %s.", url)
-	//	}
-	//	parsed := parser.NewDTMock()
-	//	parsed.Parse(string(b))
-	//	mr.Parsed[urlConfig] = parsed
+	visit := spider.NewVisit()
+	for urlConfig, url := range mr.URLs {
+		_, b, err := visit.Do(url, false)
+		if err != nil {
+			log.WithError(err).Errorf("Failed to run url %s.", url)
+		}
+		parsed := parser.NewDTMock()
+		parsed.Parse(string(b))
+		mr.Parsed[urlConfig] = parsed
 
-	//	time.Sleep(sleepDuration)
-	//}
+		time.Sleep(sleepDuration)
+	}
 
 	// output
-	// TODO
+	excel := output.NewExcel(mr.Config.Code, mr.Config.Code)
+	if err := excel.Write(mr.Parsed, mr.Config.IntervalEnd, mr.Config.IntervalStart); err != nil {
+		log.WithError(err)
+	}
 
 	return nil
 }
@@ -110,7 +109,7 @@ func (mr *Manager) genURLs() error {
 	for _, start := range mr.Config.IntervalStart {
 		for _, end := range mr.Config.IntervalEnd {
 			if start.Before(end) {
-				mr.URLs[URLConfig{
+				mr.URLs[apis.URLConfig{
 					Start: start,
 					End:   end,
 				}] = fmt.Sprintf(urlTemplate, mr.Config.Code, start.Format(apis.DateFormat), end.Format(apis.DateFormat), mr.Config.Frq, mr.Config.Money, mr.Config.Rate)

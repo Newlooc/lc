@@ -31,7 +31,7 @@ func NewVisit() *Visit {
 	}
 }
 
-func (v *Visit) Do(url string) (http.Header, []byte, error) {
+func (v *Visit) Do(url string, dryrun bool) (http.Header, []byte, error) {
 	parsedURL, err := neturl.Parse(url)
 	if err != nil {
 		log.WithError(err).Errorf("Failed to parse %s.", url)
@@ -41,6 +41,11 @@ func (v *Visit) Do(url string) (http.Header, []byte, error) {
 	req := &http.Request{}
 	req.Header = v.Header
 	req.URL = parsedURL
+
+	if dryrun {
+		log.Infof("Run URL %s.", url)
+		return nil, nil, nil
+	}
 
 	resp, err := v.httpClient.Do(req)
 	if err != nil {

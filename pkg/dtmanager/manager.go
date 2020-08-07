@@ -15,7 +15,7 @@ var (
 	errorInvalidDateRange = errors.New("Invalid data range")
 	errorInvalidArgument  = errors.New("Invalid Arguments")
 	urlTemplate           = "http://fund.eastmoney.com/data/FundInvestCaculator_AIPDatas.aspx?fcode=%s&sdate=%s&edate=%s&shdate=&round=%d&dtr=1&p=%.2f&je=%.2f&stype=1&needfirst=2&jsoncallback=FundDTSY.result"
-	sleepDuration         = time.Millisecond * 1500
+	sleepDuration         = time.Millisecond * 300
 )
 
 type Manager struct {

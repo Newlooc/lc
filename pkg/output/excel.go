@@ -36,10 +36,13 @@ func NewExcel(filename, sheet string) *Excel {
 func (e *Excel) Write(data map[apis.URLConfig]*parser.DTMock, x []time.Time, y []time.Time) error {
 	index := e.ExcelFile.NewSheet(e.Sheet)
 	e.ExcelFile.SetActiveSheet(index)
+
 	log.Info("Start write xhead.")
 	e.writeXHead(x)
+
 	log.Info("Start write yhead.")
 	e.writeYHead(y)
+
 	log.Info("Start write content.")
 	e.PosContentStart()
 	for _, startPoint := range y {
@@ -48,10 +51,6 @@ func (e *Excel) Write(data map[apis.URLConfig]*parser.DTMock, x []time.Time, y [
 				Start: startPoint,
 				End:   endPoint,
 			}]
-			log.Debugf("TESTQUERY: %+v", apis.URLConfig{
-				Start: startPoint,
-				End:   endPoint,
-			})
 			if dtData == nil {
 				e.Right()
 				continue
@@ -62,6 +61,39 @@ func (e *Excel) Write(data map[apis.URLConfig]*parser.DTMock, x []time.Time, y [
 			e.Right()
 		}
 		e.PosContentNextRow()
+	}
+
+	log.Info("Start write raw.")
+	e.PosRawNextRow(20)
+	for _, startPoint := range y {
+		for _, endPoint := range x {
+			dtData := data[apis.URLConfig{
+				Start: startPoint,
+				End:   endPoint,
+			}]
+			if dtData == nil {
+				continue
+			}
+			e.ExcelFile.SetCellValue(e.Sheet, e.GetAxis(), startPoint.Format(apis.DateFormat))
+			e.Right()
+			e.ExcelFile.SetCellValue(e.Sheet, e.GetAxis(), endPoint.Format(apis.DateFormat))
+			e.Right()
+			e.ExcelFile.SetCellValue(e.Sheet, e.GetAxis(), dtData.Code)
+			e.Right()
+			e.ExcelFile.SetCellValue(e.Sheet, e.GetAxis(), dtData.CNName)
+			e.Right()
+			e.ExcelFile.SetCellValue(e.Sheet, e.GetAxis(), dtData.InvestType)
+			e.Right()
+			e.ExcelFile.SetCellValue(e.Sheet, e.GetAxis(), dtData.ProfitPercent)
+			e.Right()
+			e.ExcelFile.SetCellValue(e.Sheet, e.GetAxis(), dtData.TotalRound)
+			e.Right()
+			e.ExcelFile.SetCellValue(e.Sheet, e.GetAxis(), dtData.BaseInvestAmount)
+			e.Right()
+			e.ExcelFile.SetCellValue(e.Sheet, e.GetAxis(), dtData.FinalAmount)
+			e.Right()
+			e.PosRawNextRow(1)
+		}
 	}
 
 	log.Info("Start save file.")
@@ -149,4 +181,11 @@ func (e *Excel) PosHeadStart() {
 
 func (e *Excel) GetAxis() string {
 	return e.currentColume + e.currentRow
+}
+
+func (e *Excel) PosRawNextRow(rowCount int) {
+	e.currentColume = "A"
+	for i := 0; i < rowCount; i++ {
+		e.Down()
+	}
 }

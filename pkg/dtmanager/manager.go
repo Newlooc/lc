@@ -79,9 +79,12 @@ func (mr *Manager) Run() error {
 
 	log.Info("Start visit URLs")
 	visit := spider.NewVisit()
+	var done, progress float64
 	for urlConfig, url := range mr.URLs {
 		_, b, err := visit.Do(url, false)
-		log.Infof("URL %s visited.", url)
+		progress = done / float64(len(mr.URLs)) * float64(100)
+		log.Infof("[%.2f%%] Finished. %s-%s", progress, urlConfig.Start.Format(apis.DateFormat), urlConfig.End.Format(apis.DateFormat))
+		log.Debugf("URL %s visited.", url)
 		if err != nil {
 			log.WithError(err).Errorf("Failed to run url %s.", url)
 		}
@@ -89,6 +92,7 @@ func (mr *Manager) Run() error {
 		parsed.Parse(string(b))
 		mr.Parsed[urlConfig] = parsed
 
+		done++
 		time.Sleep(sleepDuration)
 	}
 

@@ -92,10 +92,7 @@ func (dt *DTMock) parseRecords(raw []string) error {
 	for _, recordstr := range raw {
 		parsedrecord := &dtRecord{}
 		recordpreparse := strings.Split(strings.TrimSpace(recordstr), "_")
-		if len(recordpreparse) != 2 {
-			log.WithError(ERRORUnexpectedRawData).Errorf("record unrecognised. %s.", recordstr)
-			//return ERRORUnexpectedRawData
-		} else {
+		if len(recordpreparse) == 2 {
 			date, err := time.Parse(strings.TrimSpace(apis.DateFormat), recordpreparse[1])
 			if err != nil {
 				log.WithError(err).Errorf("failed to parse date, raw data: %s", recordstr)

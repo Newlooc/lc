@@ -94,12 +94,16 @@ func (mr *Manager) Run() error {
 
 	// output
 	log.Info("Start output")
-	excel := output.NewExcel(mr.Config.Code+".xlsx", mr.Config.Code)
+	excel := output.NewExcel(mr.genXlsFileName(), mr.Config.Code)
 	if err := excel.Write(mr.Parsed, mr.Config.IntervalEnd, mr.Config.IntervalStart); err != nil {
 		log.WithError(err)
 	}
 
 	return nil
+}
+
+func (mr *Manager) genXlsFileName() string {
+	return "./xls/" + mr.Config.Code + ".xlsx"
 }
 
 func (mr *Manager) genInterval() error {

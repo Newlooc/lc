@@ -107,7 +107,7 @@ func (mr *Manager) Run() error {
 }
 
 func (mr *Manager) genXlsFileName() string {
-	return "./xls/" + mr.Config.Code + ".xlsx"
+	return fmt.Sprintf("./xls/%s-%s-%s.xlsx", mr.Config.Code, mr.Config.Start.Format(apis.DateFormat), mr.Config.End.Format(apis.DateFormat))
 }
 
 func (mr *Manager) genInterval() error {

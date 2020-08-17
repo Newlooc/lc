@@ -32,8 +32,8 @@ func main() {
 	if err != nil {
 		log.WithError(err).Fatal("Manager init with error.")
 	}
-	dtm.Run()
-	if err != nil {
+
+	if err := dtm.Run(); err != nil {
 		log.WithError(err).Fatal("Manager run with error.")
 	}
 }

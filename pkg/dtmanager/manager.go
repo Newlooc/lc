@@ -83,7 +83,7 @@ func (mr *Manager) Run() error {
 	for urlConfig, url := range mr.URLs {
 		_, b, err := visit.Do(url, false)
 		progress = done / float64(len(mr.URLs)) * float64(100)
-		log.Infof("[%.2f%%] Finished. %s-%s", progress, urlConfig.Start.Format(apis.DateFormat), urlConfig.End.Format(apis.DateFormat))
+		log.Infof("[%.2f%%] %s-%s finished.", progress, urlConfig.Start.Format(apis.DateFormat), urlConfig.End.Format(apis.DateFormat))
 		log.Debugf("URL %s visited.", url)
 		if err != nil {
 			log.WithError(err).Errorf("Failed to run url %s.", url)

@@ -38,12 +38,12 @@ type ManagerConfig struct {
 
 func NewDTManager(code string, start, end time.Time, frq int, money, rate float64) (*Manager, error) {
 	if start.After(end) || start.Equal(end) {
-		log.WithError(errorInvalidDateRange).Error("%s to %s.", start.Format(apis.DateFormat), end.Format(apis.DateFormat))
+		log.WithError(errorInvalidDateRange).Error("%s to %s", start.Format(apis.DateFormat), end.Format(apis.DateFormat))
 		return nil, errorInvalidDateRange
 	}
 
 	if money <= float64(0) || rate >= float64(100) || rate <= float64(0) {
-		log.WithError(errorInvalidArgument).Errorf("code %s. start %s. end %s. frq %s. money %s. rate %s.", code, start, end, frq, money, rate)
+		log.WithError(errorInvalidArgument).Errorf("code %s. start %s. end %s. frq %s. money %s. rate %s", code, start, end, frq, money, rate)
 		return nil, errorInvalidArgument
 	}
 
@@ -66,13 +66,13 @@ func NewDTManager(code string, start, end time.Time, frq int, money, rate float6
 func (mr *Manager) Run() error {
 	log.Info("Start gen interval")
 	if err := mr.genInterval(); err != nil {
-		log.WithError(err).Error("Failed to gen interval.")
+		log.WithError(err).Error("Failed to gen interval")
 		return err
 	}
 
 	log.Info("Start gen URLs")
 	if err := mr.genURLs(); err != nil {
-		log.WithError(err).Error("Failed to gen urls.")
+		log.WithError(err).Error("Failed to gen urls")
 		return err
 	}
 	log.Debugf("DEBUG %+v", mr.URLs)
@@ -83,10 +83,10 @@ func (mr *Manager) Run() error {
 	for urlConfig, url := range mr.URLs {
 		_, b, err := visit.Do(url, false)
 		progress = done / float64(len(mr.URLs)) * float64(100)
-		log.Infof("[%.2f%%] %s-%s finished.", progress, urlConfig.Start.Format(apis.DateFormat), urlConfig.End.Format(apis.DateFormat))
-		log.Debugf("URL %s visited.", url)
+		log.Infof("[%.2f%%] %s-%s finished", progress, urlConfig.Start.Format(apis.DateFormat), urlConfig.End.Format(apis.DateFormat))
+		log.Debugf("URL %s visited", url)
 		if err != nil {
-			log.WithError(err).Errorf("Failed to run url %s.", url)
+			log.WithError(err).Errorf("Failed to run url %s", url)
 		}
 		parsed := parser.NewDTMock()
 		parsed.Parse(string(b))

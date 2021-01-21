@@ -37,13 +37,13 @@ func (e *Excel) Write(data map[apis.URLConfig]*parser.DTMock, x []time.Time, y [
 	index := e.ExcelFile.NewSheet(e.Sheet)
 	e.ExcelFile.SetActiveSheet(index)
 
-	log.Info("Start write xhead.")
+	log.Info("Start writing xhead")
 	e.writeXHead(x)
 
-	log.Info("Start write yhead.")
+	log.Info("Start writing yhead")
 	e.writeYHead(y)
 
-	log.Info("Start write content.")
+	log.Info("Start writing content")
 	e.PosContentStart()
 	for _, startPoint := range y {
 		for _, endPoint := range x {
@@ -63,7 +63,7 @@ func (e *Excel) Write(data map[apis.URLConfig]*parser.DTMock, x []time.Time, y [
 		e.PosContentNextRow()
 	}
 
-	log.Info("Start write raw.")
+	log.Info("Start writing rows")
 	e.PosRawNextRow(20)
 	for _, startPoint := range y {
 		for _, endPoint := range x {
@@ -96,10 +96,11 @@ func (e *Excel) Write(data map[apis.URLConfig]*parser.DTMock, x []time.Time, y [
 		}
 	}
 
-	log.Info("Start save file.")
+	log.Info("Start saving file")
 	if err := e.ExcelFile.SaveAs(e.Filename); err != nil {
-		log.WithError(err).Error("Failed to save EXCEL file.")
+		log.WithError(err).Error("Failed to save EXCEL file")
 	}
+	log.Infof("File saved at %s", e.Filename)
 
 	return nil
 }

@@ -60,7 +60,7 @@ func (dt *DTMock) Parse(raw string) error {
 
 	response := &response{}
 	if err := json.Unmarshal([]byte(raw), response); err != nil {
-		log.WithError(err).Error("response should be jsonp body. %s.", raw)
+		log.WithError(err).Error("response should be jsonp body. %s", raw)
 		return err
 	}
 
@@ -69,12 +69,12 @@ func (dt *DTMock) Parse(raw string) error {
 	rawrecords := dtmixitems[1:]
 
 	if err := dt.parseSummary(rawsummarys); err != nil {
-		log.WithError(err).Error("failed to parse summary info.")
+		log.WithError(err).Error("failed to parse summary info")
 		return err
 	}
 
 	if err := dt.parseRecords(rawrecords); err != nil {
-		log.WithError(err).Error("failed to parse dt record.")
+		log.WithError(err).Error("failed to parse dt record")
 		return err
 	}
 
@@ -103,24 +103,24 @@ func (dt *DTMock) parseRecords(raw []string) error {
 
 		recordinfo := strings.Split(strings.TrimSpace(recordpreparse[0]), "~")
 		if len(recordinfo) != 4 {
-			log.WithError(ERRORUnexpectedRawData).Errorf("record info unrecognised. %s.", recordstr)
+			log.WithError(ERRORUnexpectedRawData).Errorf("record info unrecognised. %s", recordstr)
 			//return ERRORUnexpectedRawData
 		} else {
 			price, err := strconv.ParseFloat(numstrnor(recordinfo[1]), 64)
 			if err != nil {
-				log.WithError(err).Error("failed to parse record info price. raw data: %s.", recordstr)
+				log.WithError(err).Error("failed to parse record info price. raw data: %s", recordstr)
 			}
 			parsedrecord.Price = price
 
 			amount, err := strconv.ParseFloat(numstrnor(recordinfo[2]), 64)
 			if err != nil {
-				log.WithError(err).Error("failed to parse record info amount. raw data: %s.", recordstr)
+				log.WithError(err).Error("failed to parse record info amount. raw data: %s", recordstr)
 			}
 			parsedrecord.Amount = amount
 
 			total, err := strconv.ParseFloat(numstrnor(recordinfo[3]), 64)
 			if err != nil {
-				log.WithError(err).Error("failed to parse record info total. raw data: %s.", recordstr)
+				log.WithError(err).Error("failed to parse record info total. raw data: %s", recordstr)
 			}
 			parsedrecord.Total = total
 		}
@@ -136,7 +136,7 @@ func (dt *DTMock) parseSummary(raw string) error {
 
 	summarypreparse := strings.Split(raw, "|")
 	if len(summarypreparse) != 8 {
-		log.WithError(ERRORUnexpectedRawData).Errorf("raw: %s.", raw)
+		log.WithError(ERRORUnexpectedRawData).Errorf("raw: %s", raw)
 		return ERRORUnexpectedRawData
 	}
 

@@ -34,7 +34,7 @@ func NewVisit() *Visit {
 func (v *Visit) Do(url string, dryrun bool) (http.Header, []byte, error) {
 	parsedURL, err := neturl.Parse(url)
 	if err != nil {
-		log.WithError(err).Errorf("Failed to parse %s.", url)
+		log.WithError(err).Errorf("Failed to parse %s", url)
 		return nil, nil, err
 	}
 
@@ -43,19 +43,19 @@ func (v *Visit) Do(url string, dryrun bool) (http.Header, []byte, error) {
 	req.URL = parsedURL
 
 	if dryrun {
-		log.Infof("Run URL %s.", url)
+		log.Infof("Run URL %s", url)
 		return nil, nil, nil
 	}
 
 	resp, err := v.httpClient.Do(req)
 	if err != nil {
-		log.WithError(err).Errorf("Failed to visit %s.", url)
+		log.WithError(err).Errorf("Failed to visit %s", url)
 		return nil, nil, err
 	}
 
 	ret, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.WithError(err).Errorf("Failed to read IO %s.", url)
+		log.WithError(err).Errorf("Failed to read IO %s", url)
 		return nil, nil, err
 	}
 

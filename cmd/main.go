@@ -21,20 +21,20 @@ var (
 func main() {
 	startTime, err := time.Parse(apis.DateFormat, start)
 	if err != nil {
-		log.WithError(err).Fatalf("Date format should be YYYY-MM-DD. %s given.", start)
+		log.WithError(err).Fatalf("Date format should be YYYY-MM-DD. %s given", start)
 	}
 	endTime, err := time.Parse(apis.DateFormat, end)
 	if err != nil {
-		log.WithError(err).Fatalf("Date format should be YYYY-MM-DD. %s given.", start)
+		log.WithError(err).Fatalf("Date format should be YYYY-MM-DD. %s given", start)
 	}
 
 	dtm, err := dtmanager.NewDTManager(code, startTime, endTime, frq, money, rate)
 	if err != nil {
-		log.WithError(err).Fatal("Manager init with error.")
+		log.WithError(err).Fatal("Manager init with error")
 	}
 
 	if err := dtm.Run(); err != nil {
-		log.WithError(err).Fatal("Manager run with error.")
+		log.WithError(err).Fatal("Manager run with error")
 	}
 }
 

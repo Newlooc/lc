@@ -4,3 +4,7 @@
 *.swp
 
 build/
+
+xls/
+
+_bin/

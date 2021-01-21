@@ -14,6 +14,10 @@ $ ./_bin/fun --code=110011 --start="2010-04-30" --end="2020-11-30" --money=10000
 
 2 . Then find the generated file ( coded in .xls ) in xls dir.
 
+3 . Have fun
+
+![res](https://ftp.bmp.ovh/imgs/2021/01/3391dfb1032bef2c.png)
+
 # cli params
 
 ```

@@ -1,2 +1,2 @@
 fun:
-	go build -o bin/fun cmd/main.go
+	go build -o _bin/fun cmd/main.go

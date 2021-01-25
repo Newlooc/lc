@@ -3,7 +3,7 @@ package parser
 import (
 	"encoding/json"
 	"errors"
-	"github.com/Newlooc/dt/pkg/apis"
+	"github.com/Newlooc/fundtools/pkg/apis"
 	log "github.com/sirupsen/logrus"
 	"strconv"
 	"strings"

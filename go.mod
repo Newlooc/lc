@@ -1,4 +1,4 @@
-module github.com/Newlooc/dt
+module github.com/Newlooc/fundtools
 
 go 1.14
 

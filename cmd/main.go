@@ -2,8 +2,8 @@ package main
 
 import (
 	"flag"
-	"github.com/Newlooc/dt/pkg/apis"
-	"github.com/Newlooc/dt/pkg/dtmanager"
+	"github.com/Newlooc/fundtools/pkg/apis"
+	"github.com/Newlooc/fundtools/pkg/dt"
 	log "github.com/sirupsen/logrus"
 	"time"
 )
@@ -28,7 +28,7 @@ func main() {
 		log.WithError(err).Fatalf("Date format should be YYYY-MM-DD. %s given", start)
 	}
 
-	dtm, err := dtmanager.NewDTManager(code, startTime, endTime, frq, money, rate)
+	dtm, err := dt.NewDTManager(code, startTime, endTime, frq, money, rate)
 	if err != nil {
 		log.WithError(err).Fatal("Manager init with error")
 	}

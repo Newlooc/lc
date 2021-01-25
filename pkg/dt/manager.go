@@ -1,12 +1,12 @@
-package dtmanager
+package dt
 
 import (
 	"errors"
 	"fmt"
-	"github.com/Newlooc/dt/pkg/apis"
-	"github.com/Newlooc/dt/pkg/output"
-	"github.com/Newlooc/dt/pkg/parser"
-	"github.com/Newlooc/dt/pkg/spider"
+	"github.com/Newlooc/fundtools/pkg/apis"
+	"github.com/Newlooc/fundtools/pkg/output"
+	"github.com/Newlooc/fundtools/pkg/parser"
+	"github.com/Newlooc/fundtools/pkg/spider"
 	log "github.com/sirupsen/logrus"
 	"time"
 )

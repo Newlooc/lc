@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/Newlooc/fundtools/pkg/apis"
-	"github.com/Newlooc/fundtools/pkg/output"
-	"github.com/Newlooc/fundtools/pkg/parser"
-	"github.com/Newlooc/fundtools/pkg/spider"
+	"github.com/Newlooc/fundtools/pkg/dt/output"
+	"github.com/Newlooc/fundtools/pkg/dt/parser"
+	"github.com/Newlooc/fundtools/pkg/dt/spider"
 	log "github.com/sirupsen/logrus"
 	"time"
 )

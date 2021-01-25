@@ -3,7 +3,7 @@ package output
 import (
 	excel "github.com/360EntSecGroup-Skylar/excelize"
 	"github.com/Newlooc/fundtools/pkg/apis"
-	"github.com/Newlooc/fundtools/pkg/parser"
+	"github.com/Newlooc/fundtools/pkg/dt/parser"
 	log "github.com/sirupsen/logrus"
 	"strconv"
 	"time"

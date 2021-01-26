@@ -1,55 +1,22 @@
 package main
 
 import (
-	"flag"
-	"github.com/Newlooc/fundtools/pkg/apis"
-	"github.com/Newlooc/fundtools/pkg/dt"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"time"
 )
 
 var (
-	start string
-	end   string
-	code  string
-	frq   int
-	money float64
-	rate  float64
-	debug bool
+	rootCmd = &cobra.Command{}
+	logger  = log.WithField("app", "fund-tools")
+	debug   bool
 )
 
 func main() {
-	startTime, err := time.Parse(apis.DateFormat, start)
-	if err != nil {
-		log.WithError(err).Fatalf("Date format should be YYYY-MM-DD. %s given", start)
-	}
-	endTime, err := time.Parse(apis.DateFormat, end)
-	if err != nil {
-		log.WithError(err).Fatalf("Date format should be YYYY-MM-DD. %s given", start)
-	}
-
-	dtm, err := dt.NewDTManager(code, startTime, endTime, frq, money, rate)
-	if err != nil {
-		log.WithError(err).Fatal("Manager init with error")
-	}
-
-	if err := dtm.Run(); err != nil {
-		log.WithError(err).Fatal("Manager run with error")
+	if err := rootCmd.Execute(); err != nil {
+		logger.WithError(err).Error("Failed to run fund-tools")
 	}
 }
 
 func init() {
-	flag.BoolVar(&debug, "debug", false, "debug")
-	flag.StringVar(&start, "start", "", "YYYY-MM-DD")
-	flag.StringVar(&end, "end", "", "YYYY-MM-DD")
-	flag.StringVar(&code, "code", "", "code")
-	flag.Float64Var(&money, "money", 100, "money")
-	flag.IntVar(&frq, "frq", 1, "frq")
-	flag.Float64Var(&rate, "rate", 0.15, "rate")
-	flag.Parse()
-
-	if debug {
-		log.SetLevel(log.DebugLevel)
-	}
+	rootCmd.PersistentFlags().BoolVar(&debug, "debug", false, "debug")
 }
